@@ -1,0 +1,44 @@
+Host *
+    UseKeychain yes
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/id_rsa
+
+Host hk
+    ForwardX11 yes
+    ForwardAgent yes
+    HostName 14.119.110.198
+    User miyuandong
+    Port 26890
+    IdentityFile ~/.ssh/id_rsa
+
+Host hk2
+    ForwardX11 yes
+    ForwardAgent yes
+    HostName hkjump.bigo.sg
+    User miyuandong
+    Port 26890
+    IdentityFile ~/.ssh/id_rsa
+
+Host cn
+    ForwardX11 yes
+    ForwardAgent yes
+    HostName hkjump.bigo.sg
+    User miyuandong
+    Port 26890
+    IdentityFile ~/.ssh/id_rsa
+
+Host live_test
+    ForwardAgent yes
+    ForwardX11 yes
+    HostName 119.188.50.147
+    User miyuandong
+    Port 10020
+    IdentityFile ~/.ssh/id_rsa
+
+Host live_code
+    ForwardAgent yes
+    ForwardX11 yes
+    HostName 172.27.151.3
+    User miyuandong
+    Port 10020
+    IdentityFile ~/.ssh/id_rsa
