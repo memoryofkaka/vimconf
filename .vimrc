@@ -26,8 +26,6 @@ Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeFind' }
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
 call plug#end()
 "
 "Plug 'ludovicchabant/vim-gutentags'
@@ -226,48 +224,48 @@ nmap <leader>t :TagbarToggle<CR>
 "GitGutterDeleteLine       " default: links to DiffDelete
 "GitGutterChangeDeleteLine " default: links to GitGutterChangeLineDefault, i.e. DiffChange
 
-"fzf config
-" An action can be a reference to a function that processes selected lines
-    function! s:build_quickfix_list(lines)
-      call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-      copen
-      cc
-    endfunction
-
-"nmap <leader>p :Files<CR>
-"nmap <leader>b :Buffers<CR>
-nmap <leader>g :GFiles<CR>
-let g:fzf_action = { 'ctrl-e': 'edit',
-      \ 'ctrl-q': function('s:build_quickfix_list'),
-      \ 'ctrl-t': 'tab split',
-      \ 'ctrl-x': 'split',
-      \ 'ctrl-v': 'vsplit' }
-
-let g:fzf_colors =
-    \ { 'fg':      ['fg', 'Normal'],
-      \ 'bg':      ['bg', 'Normal'],
-      \ 'hl':      ['fg', 'Comment'],
-      \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-      \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-      \ 'hl+':     ['fg', 'Statement'],
-      \ 'info':    ['fg', 'PreProc'],
-      \ 'border':  ['fg', 'Ignore'],
-      \ 'prompt':  ['fg', 'Conditional'],
-      \ 'pointer': ['fg', 'Exception'],
-      \ 'marker':  ['fg', 'Keyword'],
-      \ 'spinner': ['fg', 'Label'],
-      \ 'header':  ['fg', 'Comment'] }
- "Command for git grep
- "- fzf#vim#grep(command, with_column, [options], [fullscreen])
-command! -bang -nargs=* GGrep
-  \ call fzf#vim#grep(
-  \   'git grep --line-number '.shellescape(<q-args>), 0,
-  \   { 'dir': systemlist('git rev-parse --show-toplevel')[0] }, <bang>0)
-
- "Override Colors command. You can safely do this in your .vimrc as fzf.vim
- "will not override existing commands.
-command! -bang Colors
-  \ call fzf#vim#colors({'left': '15%', 'options': '--reverse --margin 30%,0'}, <bang>0)
+""fzf config
+"" An action can be a reference to a function that processes selected lines
+"    function! s:build_quickfix_list(lines)
+"      call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+"      copen
+"      cc
+"    endfunction
+"
+""nmap <leader>p :Files<CR>
+""nmap <leader>b :Buffers<CR>
+"nmap <leader>g :GFiles<CR>
+"let g:fzf_action = { 'ctrl-e': 'edit',
+"      \ 'ctrl-q': function('s:build_quickfix_list'),
+"      \ 'ctrl-t': 'tab split',
+"      \ 'ctrl-x': 'split',
+"      \ 'ctrl-v': 'vsplit' }
+"
+"let g:fzf_colors =
+"    \ { 'fg':      ['fg', 'Normal'],
+"      \ 'bg':      ['bg', 'Normal'],
+"      \ 'hl':      ['fg', 'Comment'],
+"      \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+"      \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+"      \ 'hl+':     ['fg', 'Statement'],
+"      \ 'info':    ['fg', 'PreProc'],
+"      \ 'border':  ['fg', 'Ignore'],
+"      \ 'prompt':  ['fg', 'Conditional'],
+"      \ 'pointer': ['fg', 'Exception'],
+"      \ 'marker':  ['fg', 'Keyword'],
+"      \ 'spinner': ['fg', 'Label'],
+"      \ 'header':  ['fg', 'Comment'] }
+" "Command for git grep
+" "- fzf#vim#grep(command, with_column, [options], [fullscreen])
+"command! -bang -nargs=* GGrep
+"  \ call fzf#vim#grep(
+"  \   'git grep --line-number '.shellescape(<q-args>), 0,
+"  \   { 'dir': systemlist('git rev-parse --show-toplevel')[0] }, <bang>0)
+"
+" "Override Colors command. You can safely do this in your .vimrc as fzf.vim
+" "will not override existing commands.
+"command! -bang Colors
+"  \ call fzf#vim#colors({'left': '15%', 'options': '--reverse --margin 30%,0'}, <bang>0)
 
 " Augmenting Ag command using fzf#vim#with_preview function
 "   * fzf#vim#with_preview([[options], [preview window], [toggle keys...]])
@@ -321,6 +319,7 @@ highlight Lf_hl_matchRefine  gui=bold guifg=Magenta cterm=bold ctermfg=201
 let g:Lf_ShortcutF = '<C-P>'
 noremap <leader>p :LeaderfFile<cr>
 noremap <leader>b :LeaderfBuffer<cr>
+let g:Lf_WorkingDirectoryMode = 'a'
 
 " *.cpp 和 *.h 间切换
 nmap <silent> <Leader>o :FSHere<cr>
