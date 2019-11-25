@@ -65,6 +65,8 @@ nnoremap <Leader>kw <C-W>k
 nnoremap <Leader>jw <C-W>j
 " 定义快捷键在结对符之间跳转
 nmap <Leader>M %
+" 80字符线
+set colorcolumn=81
 
 " 开启实时搜索功能
 set incsearch
