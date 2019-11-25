@@ -30,6 +30,7 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'rhysd/vim-clang-format'
 call plug#end()
 "
 
