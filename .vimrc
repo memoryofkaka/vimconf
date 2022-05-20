@@ -1,187 +1,217 @@
-" 让配置变更立即生效
-"autocmd BufWritePost $MYVIMRC source $MYVIMRC
+"==============================================================================
+" vim 内置配置
+"==============================================================================
+
+" 设置 vimrc 修改保存后立刻生效，不用在重新打开
+" 建议配置完成后将这个关闭，否则配置多了之后会很卡
+" autocmd BufWritePost $MYVIMRC source $MYVIMRC
+
+set encoding=UTF-8
+set noeb "关闭提示音
+:set vb t_vb=
+
+" backspace
+set nocompatible
+set backspace=indent,eol,start
+
+" 搜索结果高亮
+set hlsearch
+
+" record last site
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+" 关闭兼容模式
+set nocompatible
+
+set nu " 设置行号
+set cursorline "突出显示当前行
+" set cursorcolumn " 突出显示当前列
+set showmatch " 显示括号匹配
+
+" tab 缩进
+set tabstop=4 " 设置Tab长度为4空格
+set shiftwidth=4 " 设置自动缩进长度为4空格
+set autoindent " 继承前一行的缩进方式，适用于多行注释
+"set list lcs=tab:\|\
+
 " 定义快捷键的前缀，即<Leader>
-let mapleader="\<Space>"
+let mapleader=";"
 
-call plug#begin('~/.vim/load')
-Plug 'altercation/vim-colors-solarized'
-Plug 'tomasr/molokai'
-Plug 'vim-scripts/phd'
-Plug 'octol/vim-cpp-enhanced-highlight'
-Plug 'nathanaelkane/vim-indent-guides'
-Plug 'derekwyatt/vim-fswitch'
-Plug 'majutsushi/tagbar'
-Plug 'sjl/gundo.vim'
-Plug 'Lokaltog/vim-easymotion'
-Plug 'justinmk/vim-sneak'
-Plug 'haya14busa/incsearch.vim'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'airblade/vim-gitgutter'
-Plug 'w0rp/ale'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-git'
-Plug 'gregsexton/gitv', {'on': ['Gitv']}
-Plug 'rking/ag.vim'
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeFind' }
-Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
-call plug#end()
-"
-"Plug 'ludovicchabant/vim-gutentags'
+" ==== 系统剪切板复制粘贴 ====
+" v 模式下复制内容到系统剪切板
+vmap <Leader>c "+yy
+" n 模式下复制一行到系统剪切板
+nmap <Leader>c "+yy
+" n 模式下粘贴系统剪切板的内容
+nmap <Leader>v "+p
 
-" 开启文件类型侦测
-filetype on
-" 根据侦测到的不同类型加载对应的插件
-filetype plugin on
-" 定义快捷键到行首和行尾
-"nmap LB 0
-"nmap LE $
-" 设置快捷键将选中文本块复制至系统剪贴板
-"vnoremap <Leader>y "+y
-" 设置快捷键将系统剪贴板内容粘贴至 vim
-"nmap <Leader>p "+p
-" 定义快捷键关闭当前分割窗口
-nmap <Leader>q :q<CR>
-" 定义快捷键保存当前窗口内容
-nmap <Leader>w :w<CR>
-" 定义快捷键保存所有窗口内容并退出 vim
-nmap <Leader>WQ :wa<CR>:q<CR>
-" 不做任何保存，直接退出 vim
-nmap <Leader>Q :qa!<CR>
-" 依次遍历子窗口
-nnoremap nw <C-W><C-W>
-" 跳转至右方的窗口
-nnoremap <Leader>lw <C-W>l
-" 跳转至左方的窗口
-nnoremap <Leader>hw <C-W>h
-" 跳转至上方的子窗口
-nnoremap <Leader>kw <C-W>k
-" 跳转至下方的子窗口
-nnoremap <Leader>jw <C-W>j
-" 定义快捷键在结对符之间跳转
-nmap <Leader>M %
-
-" 开启实时搜索功能
+" 开启实时搜索
 set incsearch
 " 搜索时大小写不敏感
 set ignorecase
-" 关闭兼容模式
-set nocompatible
-" vim 自身命令行模式智能补全
-set wildmenu
-"vim自动跳转上次打开位置
-if has("autocmd")
-      au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
+syntax enable
+syntax on                    " 开启文件类型侦测
+filetype plugin indent on    " 启用自动补全
+
+" 退出插入模式指定类型的文件自动保存
+au InsertLeave *.go,*.sh,*.php write
+
+"==============================================================================
+" 插件配置
+"==============================================================================
+
+" 插件开始的位置
+call plug#begin('~/.vim/plugged')
+
+" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
+" 可以快速对齐的插件
+Plug 'junegunn/vim-easy-align'
+
+" 用来提供一个导航目录的侧边栏
+Plug 'preservim/nerdtree'
+
+" 可以使 nerdtree Tab 标签的名称更友好些
+Plug 'jistr/vim-nerdtree-tabs'
+
+" 可以在导航目录中看到 git 版本信息
+"Plug 'Xuyuanp/nerdtree-git-plugin'
+
+" 查看当前代码文件中的变量和函数列表的插件，
+" 可以切换和跳转到代码中对应的变量和函数的位置
+" 大纲式导航, Go 需要 https://github.com/jstemmer/gotags 支持
+"Plug 'preservim/tagbar'
+Plug 'liuchengxu/vista.vim'
+"Plug 'ludovicchabant/vim-gutentags'
+
+" 自动补全括号的插件，包括小括号，中括号，以及花括号
+Plug 'jiangmiao/auto-pairs'
+
+" Vim状态栏插件，包括显示行号，列号，文件类型，文件名，以及Git状态
+Plug 'vim-airline/vim-airline'
+
+" 有道词典在线翻译
+"Plug 'ianva/vim-youdao-translater'
+
+" 代码自动完成，安装完插件还需要额外配置才可以使用
+Plug 'Valloric/YouCompleteMe'
+
+" 可以在文档中显示 git 信息
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
+
+" 下面两个插件要配合使用，可以自动生成代码块
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 
 " 配色方案
-set t_Co=256 " required
-"set background=light
-"colorscheme solarized
-colorscheme molokai
-"colorscheme phd
+" colorscheme github
+Plug 'acarapetis/vim-colors-github'
+" colorscheme one
+Plug 'rakr/vim-one'
+Plug 'NLKNguyen/papercolor-theme'
 
-" 禁止光标闪烁
-set gcr=a:block-blinkon0
-" 禁止显示滚动条
-set guioptions-=l
-set guioptions-=L
-set guioptions-=r
-set guioptions-=R
-" 禁止显示菜单和工具条
-set guioptions-=m
-set guioptions-=T
+" go 主要插件
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+" go 中的代码追踪，输入 gd 就可以自动跳转
+Plug 'dgryski/vim-godef'
 
-" 总是显示状态栏
-set laststatus=2
-" 显示光标当前位置
-set ruler
-" 开启行号显示
-set number
-" 高亮显示当前行/列
-set cursorline
-set cursorcolumn
-" 高亮显示搜索结果
-set hlsearch
+" markdown 插件
+Plug 'iamcco/mathjax-support-for-mkdp'
+Plug 'iamcco/markdown-preview.vim'
 
-" 禁止折行
-set nowrap
-"显示字符
-"set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
-"set list
-set fileencodings=utf-8,gbk,utf-16le,cp1252,iso-8859-15,ucs-bom
-set termencoding=utf-8
-set encoding=utf-8
-"设置backspace
-set backspace=indent,eol,start
-" 开启语法高亮功能
-syntax enable
-" 允许用指定语法高亮配色方案替换默认方案
-syntax on
-syntax keyword cppSTLtype initializer_list
+" 缩进线
+Plug 'Yggdroot/indentLine'
+"Plug 'nathanaelkane/vim-indent-guides'
 
-" 自适应不同语言的智能缩进
-filetype indent on
-" 将制表符扩展为空格
-set expandtab
-" 设置编辑时制表符占用空格数
-set tabstop=4
-" 设置格式化时制表符占用空格数
-set shiftwidth=4
-" 让 vim 把连续数量的空格视为一个制表符
-set softtabstop=4
+" 快速跳转
+Plug 'easymotion/vim-easymotion'
 
-"折叠
-"set foldmethod=syntax
-"set foldlevelstart=99
+" icon展示
+"Plug 'ryanoasis/vim-devicons'
 
-" 随 vim 自启动
-let g:indent_guides_enable_on_vim_startup=1
-" 从第二层开始可视化显示缩进
-let g:indent_guides_start_level=2
-" 色块宽度
-let g:indent_guides_guide_size=1
-" 快捷键 i 开/关缩进可视化
-:nmap <silent> <Leader>i <Plug>IndentGuidesToggle
+" 历史打开文档
+Plug 'mhinz/vim-startify'
 
-"nnoremap <leader>jc :YcmCompleter GoToDeclaration<CR>
-"" 只能是 #include 或已打开的文件
-"nnoremap <leader>jd :YcmCompleter GoToDefinition<CR>
+" 注释插件
+Plug 'preservim/nerdcommenter'
+
+" 查找插件
+Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
+
+" 多光标
+Plug 'terryma/vim-multiple-cursors'
+
+" 搜索
+"Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+"Plug 'junegunn/fzf.vim'
+
+" 插件结束的位置，插件全部放在此行上面
+call plug#end()
+
+
+"==============================================================================
+" 主题配色
+"==============================================================================
+
+" 开启24bit的颜色，开启这个颜色会更漂亮一些
+set termguicolors
+" 配色方案, 可以从上面插件安装中的选择一个使用
+colorscheme PaperColor " 主题
+set background=light " 主题背景 dark-深色; light-浅色
+
+
+"==============================================================================
+" vim-go 插件
+"==============================================================================
+let g:go_fmt_command = "goimports" " 格式化将默认的 gofmt 替换
+let g:go_autodetect_gopath = 1
+let g:go_list_type = "quickfix"
+
+let g:go_version_warning = 1
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_generate_tags = 1
+
+let g:godef_split=2
+
+
+"==============================================================================
+" NERDTree 插件
+"==============================================================================
+
+" 打开和关闭NERDTree快捷键
+map <F1> :NERDTreeToggle<CR>
+" 显示行号
+let NERDTreeShowLineNumbers=1
+" 打开文件时是否显示目录
+"let NERDTreeAutoCenter=1
+" 是否显示隐藏文件
+let NERDTreeShowHidden=0
+" 设置宽度
+let NERDTreeWinSize=max([25, winwidth(0) / 4])
+" 忽略一下文件的显示
+let NERDTreeIgnore=['\.pyc','\~$','\.swp']
+" 打开 vim 文件及显示书签列表
+let NERDTreeShowBookmarks=2
+
+" 在终端启动vim时，共享NERDTree
+"let g:nerdtree_tabs_open_on_console_startup=1
+
+"nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <F10> :NERDTreeFind<CR>
+
+"==============================================================================
+"  nerdtree-git-plugin 插件
 "
-"" 补全功能在注释中同样有效
-"let g:ycm_complete_in_comments=1
-"" 允许 vim 加载 .ycm_extra_conf.py 文件，不再提示
-"let g:ycm_confirm_extra_conf=0
-"" 开启 YCM 标签补全引擎
-"let g:ycm_collect_identifiers_from_tags_files=1
-"" 引入 C++ 标准库tags
-""set tags+=/data/misc/software/misc./vim/stdcpp.tags
-"" YCM 集成 OmniCppComplete 补全引擎，设置其快捷键
-""inoremap <leader>; <C-x><C-o>
-"" 补全内容不以分割子窗口形式出现，只显示补全列表
-"set completeopt-=preview
-"" 从第一个键入字符就开始罗列匹配项
-"let g:ycm_min_num_of_chars_for_completion=1
-"" 禁止缓存匹配项，每次都重新生成匹配项
-"let g:ycm_cache_omnifunc=0
-"" 语法关键字补全
-"let g:ycm_seed_identifiers_with_syntax=1
-
-" 使用 NERDTree 插件查看工程文件。设置快捷键，速记：file list
-nmap <Leader>e :NERDTreeFind<CR>
-" 设置NERDTree子窗口宽度
-let NERDTreeWinSize=32
-" 设置NERDTree子窗口位置
-let NERDTreeWinPos="left"
-" 显示隐藏文件
-let NERDTreeShowHidden=1
-" NERDTree 子窗口中不显示冗余帮助信息
-let NERDTreeMinnnimalUI=1
-" 删除文件时自动删除文件对应 buffer
-let NERDTreeAutoDeleteBuffer=1
-let g:NERDTreeNodeDelimiter = "\u00a0"
-let g:NERDTreeIndicatorMapCustom = {
+"==============================================================================
+let g:NERDTreeGitStatusIndicatorMapCustom = {
     \ "Modified"  : "✹",
     \ "Staged"    : "✚",
     \ "Untracked" : "✭",
@@ -194,135 +224,163 @@ let g:NERDTreeIndicatorMapCustom = {
     \ "Unknown"   : "?"
     \ }
 
-map f <Plug>Sneak_f
-map F <Plug>Sneak_F
-map t <Plug>Sneak_t
-map T <Plug>Sneak_T
+let g:NERDTreeGitStatusShowIgnored = 1
+let g:NERDTreeGitStatusUseNerdFonts = 1
 
-" :h g:incsearch#auto_nohlsearch
-set hlsearch
-let g:incsearch#auto_nohlsearch = 1
-map n  <Plug>(incsearch-nohl-n)
-map N  <Plug>(incsearch-nohl-N)
-map *  <Plug>(incsearch-nohl-*)
-map #  <Plug>(incsearch-nohl-#)
-map g* <Plug>(incsearch-nohl-g*)
-map g# <Plug>(incsearch-nohl-g#)
+" 多光标插件
+" Multip Cursor
+" Default key mapping
 
-"AirLine
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
-let g:airline#extensions#tabline#formatter = 'default'
+"let g:multi_cursor_next_key='<C-n>'
+"let g:multi_cursor_prev_key='<C-p>'
+"let g:multi_cursor_skip_key='<C-x>'
+"let g:multi_cursor_quit_key='<Esc>'
 
-"tagbar
-nmap <leader>t :TagbarToggle<CR>
+"==============================================================================
+"  Valloric/YouCompleteMe 插件
+"==============================================================================
 
-"gitgtter
-"GitGutterAddLine          " default: links to DiffAdd
-"GitGutterChangeLine       " default: links to DiffChange
-"GitGutterDeleteLine       " default: links to DiffDelete
-"GitGutterChangeDeleteLine " default: links to GitGutterChangeLineDefault, i.e. DiffChange
+" make YCM compatible with UltiSnips (using supertab)
+let g:ycm_key_list_select_completion = ["<tab>"]
+let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
+let g:SuperTabDefaultCompletionType = '<C-j>'
 
-""fzf config
-"" An action can be a reference to a function that processes selected lines
-"    function! s:build_quickfix_list(lines)
-"      call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-"      copen
-"      cc
-"    endfunction
-"
-""nmap <leader>p :Files<CR>
-""nmap <leader>b :Buffers<CR>
-"nmap <leader>g :GFiles<CR>
-"let g:fzf_action = { 'ctrl-e': 'edit',
-"      \ 'ctrl-q': function('s:build_quickfix_list'),
-"      \ 'ctrl-t': 'tab split',
-"      \ 'ctrl-x': 'split',
-"      \ 'ctrl-v': 'vsplit' }
-"
-"let g:fzf_colors =
-"    \ { 'fg':      ['fg', 'Normal'],
-"      \ 'bg':      ['bg', 'Normal'],
-"      \ 'hl':      ['fg', 'Comment'],
-"      \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-"      \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-"      \ 'hl+':     ['fg', 'Statement'],
-"      \ 'info':    ['fg', 'PreProc'],
-"      \ 'border':  ['fg', 'Ignore'],
-"      \ 'prompt':  ['fg', 'Conditional'],
-"      \ 'pointer': ['fg', 'Exception'],
-"      \ 'marker':  ['fg', 'Keyword'],
-"      \ 'spinner': ['fg', 'Label'],
-"      \ 'header':  ['fg', 'Comment'] }
-" "Command for git grep
-" "- fzf#vim#grep(command, with_column, [options], [fullscreen])
-"command! -bang -nargs=* GGrep
-"  \ call fzf#vim#grep(
-"  \   'git grep --line-number '.shellescape(<q-args>), 0,
-"  \   { 'dir': systemlist('git rev-parse --show-toplevel')[0] }, <bang>0)
-"
-" "Override Colors command. You can safely do this in your .vimrc as fzf.vim
-" "will not override existing commands.
-"command! -bang Colors
-"  \ call fzf#vim#colors({'left': '15%', 'options': '--reverse --margin 30%,0'}, <bang>0)
+" better key bindings for UltiSnipsExpandTrigger
+let g:UltiSnipsExpandTrigger = "<tab>"
+let g:UltiSnipsJumpForwardTrigger = "<tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
-" Augmenting Ag command using fzf#vim#with_preview function
-"   * fzf#vim#with_preview([[options], [preview window], [toggle keys...]])
-"     * For syntax-highlighting, Ruby and any of the following tools are required:
-"       - Bat: https://github.com/sharkdp/bat
-"       - Highlight: http://www.andre-simon.de/doku/highlight/en/highlight.php
-"       - CodeRay: http://coderay.rubychan.de/
-"       - Rouge: https://github.com/jneen/rouge
-"
-"   :Ag  - Start fzf with hidden preview window that can be enabled with "?" key
-"   :Ag! - Start fzf in fullscreen and display the preview window above
-"command! -bang -nargs=* Ag
-"  \ call fzf#vim#ag(<q-args>,
-"  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
-"  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
-"  \                 <bang>0)
+"==============================================================================
+"  其他插件配置
+"==============================================================================
 
-" Similarly, we can apply it to fzf#vim#grep. To use ripgrep instead of ag:
-"command! -bang -nargs=* Rg
-"  \ call fzf#vim#grep(
-"  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-"  \   <bang>0 ? fzf#vim#with_preview('up:60%')
-"  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-"  \   <bang>0)
-"
-"" Likewise, Files command with preview window
-"command! -bang -nargs=? -complete=dir Files
-"  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+" markdwon 的快捷键
+map <silent> <F5> <Plug>MarkdownPreview
+map <silent> <F6> <Plug>StopMarkdownPreview
 
-"tags config
-" gutentags搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归 "
-let g:gutentags_project_root = ['.root', '.svn', '.git', '.project']
-" 所生成的数据文件的名称 "
-let g:gutentags_ctags_tagfile = '.tags'
-" 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录 "
-let s:vim_tags = expand('~/.cache/tags')
-let g:gutentags_cache_dir = s:vim_tags
-" 检测 ~/.cache/tags 不存在就新建 "
-if !isdirectory(s:vim_tags)
-   silent! call mkdir(s:vim_tags, 'p')
+" tab 标签页切换快捷键
+:nn <Leader>1 1gt
+:nn <Leader>2 2gt
+:nn <Leader>3 3gt
+:nn <Leader>4 4gt
+:nn <Leader>5 5gt
+:nn <Leader>6 6gt
+:nn <Leader>7 7gt
+:nn <Leader>8 8gt
+:nn <Leader>9 8gt
+:nn <Leader>0 :tablast<CR>
+
+" 缩进线
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+let g:indentLine_color_tty_light = 7 " (default: 4)
+let g:indentLine_color_dark = 1 " (default: 2)
+let g:indentLine_enabled = 1
+"let g:indent_guides_enable_on_vim_startup = 1 "添加行，vim启动时启用
+"let g:indent_guides_start_level = 1           "添加行，开始显示对齐线的缩进级别
+"let g:indent_guides_guide_size = 1            "添加行，对齐线的宽度，（1字符）
+"let g:indent_guides_auto_colors = 1
+
+"==============================================================================
+" easymotion 的配置
+"==============================================================================
+" <Leader>f{char} to move to {char}
+"map  <Leader>f <Plug>(easymotion-bd-f)
+"nmap <Leader>f <Plug>(easymotion-overwin-f)
+
+" Move to line
+map <Leader>l <Plug>(easymotion-bd-jk)
+nmap <Leader>l <Plug>(easymotion-overwin-line)
+
+" Move to word
+map  <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+
+" s{char}{char} to move to {char}{char}
+nmap <leader>s <Plug>(easymotion-overwin-f2)
+
+"==============================================================================
+" leaderF 的配置
+"==============================================================================
+let g:Lf_ShortcutF = '<c-p>'
+"let g:Lf_CommandMap = {'<C-K>': ['<Up>'], '<C-J>': ['<Down>']}
+let g:Lf_WorkingDirectoryMode = 'AF'
+let g:Lf_RootMarkers = ['.git', '.svn', '.hg', '.project', '.root']
+
+" Show icons, icons are shown by default
+let g:Lf_ShowDevIcons = 1
+" don't show the help in normal mode
+let g:Lf_HideHelp = 1
+let g:Lf_UseCache = 0
+let g:Lf_UseVersionControlTool = 0
+let g:Lf_IgnoreCurrentBufferName = 1
+" popup mode
+let g:Lf_WindowPosition = 'popup'
+let g:Lf_PreviewInPopup = 1
+let g:Lf_StlSeparator = { 'left': "\ue0b0", 'right': "\ue0b2", 'font': "DejaVu Sans Mono for Powerline" }
+"let g:Lf_PreviewResult = {'Function': 0, 'BufTag': 0 }
+let g:Lf_StlColorscheme = 'powerline'
+let g:Lf_PreviewResult = {
+        \ 'File': 0,
+        \ 'Buffer': 0,
+        \ 'Mru': 0,
+        \ 'Tag': 0,
+        \ 'BufTag': 1,
+        \ 'Function': 1,
+        \ 'Line': 1,
+        \ 'Colorscheme': 0,
+        \ 'Rg': 0,
+        \ 'Gtags': 0
+        \}
+
+"let g:Lf_ShortcutF = "<leader>ff"
+noremap <leader>fb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
+noremap <leader>fm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
+"noremap <leader>ft :<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>
+noremap <leader>fl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
+noremap <leader>fw :<C-U><C-R>=printf("Leaderf rg -e %s", "")<CR>
+
+"noremap <C-B> :<C-U><C-R>=printf("Leaderf! rg --current-buffer -e %s ", expand("<cword>"))<CR>
+noremap <C-G> :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR>
+" search visually selected text literally
+xnoremap gf :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR>
+noremap go :<C-U>Leaderf! rg --recall<CR>
+
+let g:Lf_GtagsAutoGenerate = 0
+let g:Lf_Gtagslabel = 'native-pygments'
+noremap <leader>fr :<C-U><C-R>=printf("Leaderf! gtags -r %s --auto-jump", expand("<cword>"))<CR><CR>
+noremap <leader>fd :<C-U><C-R>=printf("Leaderf! gtags -d %s --auto-jump", expand("<cword>"))<CR><CR>
+noremap <leader>fo :<C-U><C-R>=printf("Leaderf! gtags --recall %s", "")<CR><CR>
+noremap <leader>fn :<C-U><C-R>=printf("Leaderf gtags --next %s", "")<CR><CR>
+noremap <leader>fp :<C-U><C-R>=printf("Leaderf gtags --previous %s", "")<CR><CR>
+
+
+"==============================================================================
+" GVim 的配置
+"==============================================================================
+" 如果不使用 GVim ，可以不用配置下面的配置
+if has('gui_running')
+        colorscheme one
+    " 设置启动时窗口的大小
+    set lines=999 columns=999 linespace=4
+
+    " 设置字体及大小
+        set guifont=Roboto\ Mono\ 13
+
+    set guioptions-=m " 隐藏菜单栏
+    set guioptions-=T " 隐藏工具栏
+    set guioptions-=L " 隐藏左侧滚动条
+    set guioptions-=r " 隐藏右侧滚动条
+    set guioptions-=b " 隐藏底部滚动条
+            " 在 gvim 下不会和 terminal 的 alt+数字的快捷键冲突，
+    " 所以将 tab 切换配置一份 alt+数字的快捷键
+    :nn <M-1> 1gt
+    :nn <M-2> 2gt
+    :nn <M-3> 3gt
+    :nn <M-4> 4gt
+    :nn <M-5> 5gt
+    :nn <M-6> 6gt
+    :nn <M-7> 7gt
+    :nn <M-8> 8gt
+        :nn <M-9> 9gt
+        :nn <M-0> :tablast<CR>
 endif
-" 配置 ctags 的参数 "
-let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
-let g:gutentags_ctags_extra_args += ['--c++-kinds=+pxI']
-let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
-
-"leaderF config
-noremap <leader>r :LeaderfFunction!<cr>
-highlight Lf_hl_match gui=bold guifg=Blue cterm=bold ctermfg=21
-highlight Lf_hl_matchRefine  gui=bold guifg=Magenta cterm=bold ctermfg=201
-let g:Lf_ShortcutF = '<C-P>'
-noremap <leader>p :LeaderfFile<cr>
-noremap <leader>b :LeaderfBuffer<cr>
-let g:Lf_WorkingDirectoryMode = 'a'
-
-" *.cpp 和 *.h 间切换
-nmap <silent> <Leader>o :FSHere<cr>
-
-nmap <Leader>f :Ag<cr>
-let g:ag_highlight=1
